@@ -26,7 +26,6 @@ CORRECTIONS v3 :
 import re
 import unicodedata
 
-
 # ============================================================
 # 1. EN-TÊTES / PIEDS DE PAGE RÉPÉTÉS
 # ============================================================
@@ -206,7 +205,7 @@ MOTS_COMPOSES_PREFIXES = {
     "entre", "extra", "hyper", "infra", "inter", "intra", "macro",
     "méta", "micro", "mini", "multi", "néo", "non", "outre", "para",
     "poly", "post", "pré", "pro", "pseudo", "quasi", "re", "ré",
-    "semi", "socio", "sub", "super", "supra", "sur", "trans", "tri",
+    "socio", "sub", "super", "supra", "sur", "trans", "tri",
     "ultra", "médico", "chirurgico", "technico",
 }
 

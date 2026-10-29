@@ -14,12 +14,10 @@ Usage :
     response = agent.ask("Quels vaccins un infirmier peut-il prescrire ?")
 """
 
-import json
 from dataclasses import dataclass
 
 from embeddings import EmbeddedChunk, EmbeddingEngine, load_embedded_chunks
 from retrieval import AdvancedRetriever, ScoredResult, call_mistral_chat
-
 
 # ============================================================
 # 1. PROMPT ENGINEERING
@@ -171,7 +169,7 @@ class RAGAgent:
         """
         if verbose:
             print(f"\n{'=' * 60}")
-            print(f"🤖 RAG — Traitement de la question")
+            print("🤖 RAG — Traitement de la question")
             print(f"{'=' * 60}\n")
 
         # Étape 1 : Retrieval avancé (multi-query géré à l'intérieur)
@@ -228,7 +226,7 @@ class RAGAgent:
 
         if verbose:
             print(f"{'─' * 60}")
-            print(f"📝 RÉPONSE :\n")
+            print("📝 RÉPONSE :\n")
             print(answer)
             print(f"\n{'─' * 60}")
 
