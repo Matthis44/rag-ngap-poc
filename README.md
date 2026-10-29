@@ -1,6 +1,6 @@
 # RAG on French nursing billing regulations (NGAP)
 
-[![tests](https://github.com/Matthis44/RAG_KEYNOVE_v1/actions/workflows/tests.yml/badge.svg)](https://github.com/Matthis44/RAG_KEYNOVE_v1/actions/workflows/tests.yml)
+[![tests](https://github.com/Matthis44/rag-ngap-poc/actions/workflows/tests.yml/badge.svg)](https://github.com/Matthis44/rag-ngap-poc/actions/workflows/tests.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -52,8 +52,8 @@ data/RAW/*.pdf ─▶ ingestion.py ─▶ cleaning_text.py ─▶ chunking.py �
 ## Quick start
 
 ```bash
-git clone https://github.com/Matthis44/RAG_KEYNOVE_v1.git
-cd RAG_KEYNOVE_v1
+git clone https://github.com/Matthis44/rag-ngap-poc.git
+cd rag-ngap-poc
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 pytest                                # no API key needed
