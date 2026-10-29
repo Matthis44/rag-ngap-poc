@@ -26,12 +26,13 @@ AMÉLIORATIONS v5
 
 import os
 import re
-import pdfplumber
-import pandas as pd
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from dataclasses import dataclass, field, asdict
-from cleaning_text import clean_text
 
+import pandas as pd
+import pdfplumber
+
+from cleaning_text import clean_text
 
 # ============================================================
 # 1. DATACLASSES
@@ -570,13 +571,13 @@ def _extract_packed_lks(table: list, schema: dict) -> list[str]:
         if not cell_str:
             continue
 
-        lines = [l.strip() for l in cell_str.split("\n") if l.strip()]
+        lines = [ln.strip() for ln in cell_str.split("\n") if ln.strip()]
         lk_lines = [
-            l for l in lines
-            if _has_lettre_cle(l)
-            and "lettre" not in l.lower()
-            and "désignation" not in l.lower()
-            and "coefficient" not in l.lower()
+            ln for ln in lines
+            if _has_lettre_cle(ln)
+            and "lettre" not in ln.lower()
+            and "désignation" not in ln.lower()
+            and "coefficient" not in ln.lower()
         ]
 
         if len(lk_lines) >= 2:
@@ -674,7 +675,7 @@ def _extract_packed_designations_v3(table: list, schema: dict) -> list[str]:
     h0 = _cell(table[0][d_col])
     h1 = _cell(table[0][c_col]) if c_col < len(table[0]) else ""
 
-    lines = [l.strip() for l in h0.split("\n") if l.strip()]
+    lines = [ln.strip() for ln in h0.split("\n") if ln.strip()]
     if len(lines) < 2:
         return []
 
@@ -747,7 +748,6 @@ def _repair_split_letter_keys(table: list, schema: dict) -> list:
                 while len(nxt) < needed:
                     nxt.append("")
 
-                next_desc = _cell(nxt[d_col])
                 next_coeff = _cell(nxt[c_col])
                 next_lk = _cell(nxt[lk_col])
 
@@ -854,8 +854,8 @@ def _format_cotation_ngap(
             # la première appartient à une continuation cross-page : consommer cet index.
             if raw_lk and _has_lettre_cle(raw_lk):
                 lk_cell_lines = [
-                    l.strip() for l in raw_lk.split("\n")
-                    if l.strip() and _has_lettre_cle(l.strip())
+                    ln.strip() for ln in raw_lk.split("\n")
+                    if ln.strip() and _has_lettre_cle(ln.strip())
                 ]
                 if len(lk_cell_lines) > 1:
                     packed_lk_idx += 1
@@ -889,7 +889,7 @@ def _format_cotation_ngap(
             if c.strip() and re.match(r"^\d+[,.]?\d*$", c.strip())
         ]
 
-        lk_lines = [l.strip() for l in raw_lk.split("\n") if l.strip()] if raw_lk else []
+        lk_lines = [ln.strip() for ln in raw_lk.split("\n") if ln.strip()] if raw_lk else []
         designation = raw_desig_text.replace("\n", " ").strip()
 
         if designation and "designation" in _normalize_header_name(designation):

@@ -8,10 +8,10 @@ Optimisé pour les textes juridiques infirmiers (NGAP + circulaires).
 """
 
 import re
-from enum import Enum
 from dataclasses import dataclass
-from ingestion import Document, DocumentMetadata
+from enum import Enum
 
+from ingestion import DocumentMetadata
 
 # ============================================================
 # 1. DATACLASS CHUNK

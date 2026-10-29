@@ -13,9 +13,10 @@ Changements clés vs version précédente :
 """
 
 import json
-import urllib.request
 import urllib.error
+import urllib.request
 from dataclasses import dataclass
+from datetime import date
 
 from embeddings import (
     EmbeddedChunk,
@@ -23,7 +24,6 @@ from embeddings import (
     cosine_similarity,
     search_similar,
 )
-
 
 # ============================================================
 # 1. APPEL API MISTRAL (Chat + Rerank)
@@ -63,9 +63,9 @@ def call_mistral_chat(
             body = e.read().decode("utf-8")
         except Exception:
             body = str(e)
-        raise RuntimeError(f"Erreur API Mistral ({e.code}) : {body}")
+        raise RuntimeError(f"Erreur API Mistral ({e.code}) : {body}") from e
     except Exception as e:
-        raise RuntimeError(f"Erreur connexion API Mistral : {e}")
+        raise RuntimeError(f"Erreur connexion API Mistral : {e}") from e
 
     return result["choices"][0]["message"]["content"]
 
@@ -104,9 +104,9 @@ def call_mistral_rerank(
             body = e.read().decode("utf-8")
         except Exception:
             body = str(e)
-        raise RuntimeError(f"Erreur API Mistral Rerank ({e.code}) : {body}")
+        raise RuntimeError(f"Erreur API Mistral Rerank ({e.code}) : {body}") from e
     except Exception as e:
-        raise RuntimeError(f"Erreur connexion API Mistral Rerank : {e}")
+        raise RuntimeError(f"Erreur connexion API Mistral Rerank : {e}") from e
 
     return result["results"]
 
@@ -328,9 +328,11 @@ def compute_priority_score(priorite: int | None) -> float:
     return mapping.get(priorite, 0.5)
 
 
-def compute_recency_score(annee: int | None, current_year: int = 2026) -> float:
+def compute_recency_score(annee: int | None, current_year: int | None = None) -> float:
     if annee is None:
         return 0.5
+    if current_year is None:
+        current_year = date.today().year
     age = current_year - annee
     if age <= 2:
         return 1.0

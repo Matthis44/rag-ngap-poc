@@ -15,10 +15,9 @@ import argparse
 import time
 from pathlib import Path
 
+from chunking import ChunkingStrategy, chunk_documents
+from embeddings import EmbeddingConfig, EmbeddingEngine, save_embedded_chunks
 from ingestion import ingest_directory
-from chunking import chunk_documents, ChunkingStrategy, Chunk
-from embeddings import EmbeddingEngine, EmbeddingConfig, save_embedded_chunks
-
 
 # ============================================================
 # CONFIG PAR DÉFAUT

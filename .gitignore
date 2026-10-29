@@ -1,9 +1,19 @@
 # Fichiers sensibles
 .env
 .env.*
+!.env.example
 
 notebook/
 
 # Fichiers système
 .venv
 .claude
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Regenerable cache (the pre-computed index data/embedded_chunks.json is kept)
+data/embeddings_cache/

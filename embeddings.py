@@ -22,17 +22,16 @@ Usage :
     vectors = engine.embed_chunk(chunks)
     query_vec = engine.embed_query("quels vaccins peut faire un infirmier ?")
 """
-import os
+import hashlib
 import json
 import math
+import os
 import time
-import hashlib
-from dataclasses import dataclass, field
-from pathlib import Path
- 
-import urllib.request
 import urllib.error
- 
+import urllib.request
+from dataclasses import dataclass
+from pathlib import Path
+
 from chunking import Chunk
 
 # ============================================================
@@ -68,7 +67,7 @@ class EmbeddingConfig:
 # ==========================================================
 
 def dot_product(vec_a : list[float], vec_b : list[float]):
-    return sum(a*b for a,b in zip(vec_a,vec_b))
+    return sum(a*b for a,b in zip(vec_a, vec_b, strict=True))
 
 def vector_norm(vec : list[float]):
     return math.sqrt(sum(v*v for v in vec))
@@ -118,7 +117,7 @@ def _post_embedding_api(
         raise RuntimeError(
             f"Erreur API {provider} ({e.code}) : {body}\n"
             f"Vérifie ta clé API."
-        )
+        ) from e
 
     sorted_data = sorted(result["data"], key=lambda x: x["index"])
     return [item["embedding"] for item in sorted_data]
@@ -128,9 +127,9 @@ def _post_embedding_api(
 def call_mistral_embedding_api(
     texts: list[str],
     api_key: str,
-    config: EmbeddingConfig = EmbeddingConfig(),
+    config: EmbeddingConfig | None = None,
 ) -> list[list[float]]:
-    return _post_embedding_api(texts, api_key, config, provider="Mistral")
+    return _post_embedding_api(texts, api_key, config or EmbeddingConfig(), provider="Mistral")
 
 
 def call_openai_embedding_api(
@@ -257,7 +256,7 @@ class EmbeddingEngine:
                 batch_texts, self.api_key, self.config, provider=self.provider
             )
 
-            for (orig_idx, text), embedding in zip(batch, batch_embeddings):
+            for (orig_idx, text), embedding in zip(batch, batch_embeddings, strict=True):
                 embeddings[orig_idx]=embedding
                 self._save_to_cache(text,embedding)
 
@@ -276,7 +275,7 @@ class EmbeddingEngine:
 
         return[
             EmbeddedChunk(chunk=chunk, embedding=emb)
-            for chunk, emb in zip(chunks, embeddings)
+            for chunk, emb in zip(chunks, embeddings, strict=True)
         ]
     
     def embed_query(self, query: str) -> list[float]:
@@ -343,7 +342,7 @@ def load_embedded_chunks(filepath: str = "data/embedded_chunks.json") -> list[Em
     """Charge les chunks vectorisés depuis un fichier JSON."""
     from ingestion import DocumentMetadata
  
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         data = json.load(f)
  
     embedded = []
@@ -388,7 +387,7 @@ if __name__ == "__main__":
     print("\n--- Test API Mistral ---\n")
     try:
         engine = EmbeddingEngine()
-        print(f"  ✅ Clé API chargée")
+        print("  ✅ Clé API chargée")
  
         # Vectorise 3 textes de test
         test_texts = [
